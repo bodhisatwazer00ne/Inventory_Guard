@@ -1,0 +1,119 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helper Functions ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAnonymous() {
+      return isSignedIn() && request.auth.token.firebase.sign_in_provider == 'anonymous';
+    }
+
+    function isVerified() {
+      return isSignedIn() && (request.auth.token.email_verified == true || isAnonymous());
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Relational Shop Check (Safe for List Queries - avoids O(n) get() calls)
+    function canAccessShop(shopId) {
+      return isSignedIn() && (
+        shopId == request.auth.uid || 
+        (shopId == 'demo-shop-v1' && isAnonymous())
+      );
+    }
+
+    // RBAC checks (Use only for single-doc target operations like get/create/update/delete)
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (isAnonymous() || getUserData().role == 'ADMIN');
+    }
+
+    function isSales() {
+      return isSignedIn() && getUserData().role == 'SALES';
+    }
+
+    // --- Collection Rules ---
+
+    match /users/{userId} {
+      allow get: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && request.auth.uid == userId
+        && incoming().diff(existing()).affectedKeys().hasOnly(['shopName', 'email', 'updatedAt']);
+    }
+
+    match /products/{productId} {
+      allow list: if isSignedIn() && (
+        resource.data.shopId == request.auth.uid || 
+        (resource.data.shopId == 'demo-shop-v1' && isAnonymous())
+      );
+      allow get: if isSignedIn() && canAccessShop(existing().shopId);
+      
+      allow create: if isVerified() && isAdmin() && canAccessShop(incoming().shopId);
+      allow delete: if isVerified() && isAdmin() && canAccessShop(existing().shopId);
+      allow update: if isVerified() && canAccessShop(existing().shopId) && (
+        isAdmin() || 
+        (isSales() && incoming().diff(existing()).affectedKeys().hasOnly(['quantity', 'updatedAt']))
+      );
+    }
+
+    match /customers/{customerId} {
+      allow list: if isSignedIn() && (
+        resource.data.shopId == request.auth.uid || 
+        (resource.data.shopId == 'demo-shop-v1' && isAnonymous())
+      );
+      allow get: if isSignedIn() && canAccessShop(existing().shopId);
+      allow create: if isVerified() && canAccessShop(incoming().shopId);
+      allow update: if isVerified() && canAccessShop(existing().shopId);
+      allow delete: if isVerified() && isAdmin() && canAccessShop(existing().shopId);
+    }
+
+    match /orders/{orderId} {
+      allow list: if isSignedIn() && (
+        resource.data.shopId == request.auth.uid || 
+        (resource.data.shopId == 'demo-shop-v1' && isAnonymous())
+      );
+      allow get: if isSignedIn() && canAccessShop(existing().shopId);
+      allow create: if isVerified() && canAccessShop(incoming().shopId);
+      allow update: if isVerified() && canAccessShop(existing().shopId);
+    }
+
+    match /ledgerEntries/{ledgerId} {
+      allow list: if isSignedIn() && (
+        resource.data.shopId == request.auth.uid || 
+        (resource.data.shopId == 'demo-shop-v1' && isAnonymous())
+      );
+      allow get: if isSignedIn() && canAccessShop(existing().shopId);
+      allow create: if isVerified() && canAccessShop(incoming().shopId);
+      allow update: if isVerified() && canAccessShop(existing().shopId);
+    }
+
+    match /payments/{paymentId} {
+      allow list: if isSignedIn() && (
+        resource.data.shopId == request.auth.uid || 
+        (resource.data.shopId == 'demo-shop-v1' && isAnonymous())
+      );
+      allow get: if isSignedIn() && canAccessShop(existing().shopId);
+      allow create: if isVerified() && canAccessShop(incoming().shopId);
+    }
+  }
+}

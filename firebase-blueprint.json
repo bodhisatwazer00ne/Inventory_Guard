@@ -1,0 +1,119 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Store user details and roles",
+      "type": "object",
+      "properties": {
+        "shopName": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["ADMIN", "SALES"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["shopName", "email", "role"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Inventory item",
+      "type": "object",
+      "properties": {
+        "shopId": { "type": "string" },
+        "name": { "type": "string" },
+        "sku": { "type": "string" },
+        "category": { "type": "string" },
+        "price": { "type": "number" },
+        "quantity": { "type": "number" },
+        "lowStockThreshold": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["shopId", "name", "price", "quantity"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "Customer of the shop",
+      "type": "object",
+      "properties": {
+        "shopId": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "totalDue": { "type": "number" },
+        "lastReminderSentAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["shopId", "name"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Billing transaction",
+      "type": "object",
+      "properties": {
+        "shopId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "items": { "type": "array" },
+        "totalAmount": { "type": "number" },
+        "paymentStatus": { "type": "string", "enum": ["PAID", "PAY_LATER"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["shopId", "customerId", "totalAmount", "paymentStatus"]
+    },
+    "LedgerEntry": {
+      "title": "Ledger Entry",
+      "description": "Credit entry for a customer",
+      "type": "object",
+      "properties": {
+        "shopId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "orderId": { "type": "string" },
+        "totalAmount": { "type": "number" },
+        "paidAmount": { "type": "number" },
+        "dueAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["PAID", "PARTIAL", "UNPAID"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["shopId", "customerId", "totalAmount", "paidAmount", "dueAmount", "status"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "Payment record against a ledger entry",
+      "type": "object",
+      "properties": {
+        "shopId": { "type": "string" },
+        "ledgerId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "amount": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["shopId", "customerId", "amount", "timestamp"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profiles"
+    },
+    "products/{productId}": {
+      "schema": "Product",
+      "description": "Inventory products"
+    },
+    "customers/{customerId}": {
+      "schema": "Customer",
+      "description": "Shop customers"
+    },
+    "orders/{orderId}": {
+      "schema": "Order",
+      "description": "Order history"
+    },
+    "ledgerEntries/{ledgerId}": {
+      "schema": "LedgerEntry",
+      "description": "Customer credit ledger"
+    },
+    "payments/{paymentId}": {
+      "schema": "Payment",
+      "description": "Payment records"
+    }
+  }
+}
