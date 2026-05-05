@@ -1,6 +1,6 @@
-# Kapase Kirana
+# Inventory Guard
 
-Kapase Kirana is a high-performance inventory and credit management system designed specifically for small to medium-sized retail businesses. It streamlines daily operations by integrating digital billing, real-time stock tracking, and automated customer credit ledgers into a single, intuitive interface.
+Inventory Guard is a high-performance inventory and credit management system designed specifically for small to medium-sized retail businesses. It streamlines daily operations by integrating digital billing, real-time stock tracking, and automated customer credit ledgers into a single, intuitive interface.
 
 ## Core Features
 
