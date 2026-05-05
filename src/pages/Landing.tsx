@@ -20,7 +20,7 @@ export default function Landing() {
               <Receipt className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-xl tracking-tight text-neutral-900">
-              InventoryGuard
+              Kapase Kirana
             </span>
           </div>
           <div className="flex items-center gap-4">
@@ -64,7 +64,7 @@ export default function Landing() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-lg md:text-xl text-neutral-500 max-w-2xl mx-auto leading-relaxed"
           >
-            Stop losing money on forgotten credits. InventoryGuard helps small business owners track stock, sales, and outstanding dues with zero effort.
+            Stop losing money on forgotten credits. Kapase Kirana helps small business owners track stock, sales, and outstanding dues with zero effort.
           </motion.p>
           
           <motion.div 
@@ -126,7 +126,7 @@ export default function Landing() {
             <div className="w-6 h-6 rounded bg-teal-600 flex items-center justify-center">
               <Receipt className="w-3 h-3 text-white" />
             </div>
-            <span className="font-bold text-lg tracking-tight">InventoryGuard</span>
+            <span className="font-bold text-lg tracking-tight">Kapase Kirana</span>
           </div>
           <p className="text-neutral-400 text-sm font-medium">
             Built for small retailers and local shops.

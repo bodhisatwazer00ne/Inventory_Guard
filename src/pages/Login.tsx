@@ -22,7 +22,7 @@ export default function Login() {
             <Receipt className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-neutral-900">
-            Welcome to InventoryGuard
+            Welcome to Kapase Kirana
           </h1>
           <p className="text-neutral-500">
             The smart way to manage your shop's inventory and credit.

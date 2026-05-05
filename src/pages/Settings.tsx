@@ -118,7 +118,7 @@ export default function Settings() {
                   id="shopName" 
                   value={shopName} 
                   onChange={e => setShopName(e.target.value)}
-                  placeholder="InventoryGuard Mart"
+                  placeholder="Kapase Kirana Mart"
                 />
               </div>
               <div className="space-y-2">

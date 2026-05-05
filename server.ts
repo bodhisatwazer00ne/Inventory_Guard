@@ -28,7 +28,7 @@ async function startServer() {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from: 'InventoryGuard <onboarding@resend.dev>',
+        from: 'Kapase Kirana <onboarding@resend.dev>',
         to: email || 'bodhisatwa.zeroone@gmail.com', // Fallback for demo
         subject: `Payment Reminder: ${customerName}`,
         html: `
@@ -38,7 +38,7 @@ async function startServer() {
             <p>This is a friendly reminder that you have an outstanding balance of <strong>$${dueAmount.toLocaleString()}</strong> at our shop.</p>
             <p>Please visit us at your earliest convenience to settle the amount.</p>
             <hr style="border: 1px solid #eee; margin: 20px 0;" />
-            <p style="font-size: 12px; color: #666;">Sent via InventoryGuard</p>
+            <p style="font-size: 12px; color: #666;">Sent via Kapase Kirana</p>
           </div>
         `
       });
