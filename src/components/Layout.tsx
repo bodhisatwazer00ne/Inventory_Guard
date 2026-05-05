@@ -42,7 +42,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="flex h-screen bg-neutral-50 dark:bg-neutral-950">
+    <div className="flex h-screen bg-neutral-50">
       {/* Mobile Sidebar Overlay */}
       <AnimatePresence>
         {!isSidebarOpen && (
@@ -57,13 +57,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <motion.aside
         initial={false}
         animate={{ width: isSidebarOpen ? '260px' : '0px' }}
-        className="relative z-50 flex flex-col bg-white border-r border-neutral-200 dark:bg-neutral-900 dark:border-neutral-800 overflow-hidden lg:static"
+        className="relative z-50 flex flex-col bg-white border-r border-neutral-200 overflow-hidden lg:static"
       >
         <div className="p-6 flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center">
             <Receipt className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold text-xl tracking-tight text-neutral-900 dark:text-neutral-50 whitespace-nowrap">
+          <span className="font-bold text-xl tracking-tight text-neutral-900 whitespace-nowrap">
             InventoryGuard
           </span>
         </div>
@@ -77,8 +77,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 className={({ isActive }) => `
                   flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors
                   ${isActive 
-                    ? 'bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400' 
-                    : 'text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-50'}
+                    ? 'bg-teal-50 text-teal-700' 
+                    : 'text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900'}
                 `}
               >
                 <item.icon className="w-5 h-5 flex-shrink-0" />
@@ -91,12 +91,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div className="p-4 mt-auto">
           <Separator className="mb-4" />
           <div className="flex items-center gap-3 mb-4 px-2 overflow-hidden">
-            <Avatar className="w-9 h-9 border border-neutral-200 dark:border-neutral-800">
+            <Avatar className="w-9 h-9 border border-neutral-200">
               <AvatarImage src={user?.photoURL || ''} />
               <AvatarFallback>{user?.displayName?.charAt(0) || 'U'}</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-50 truncate">
+              <p className="text-sm font-semibold text-neutral-900 truncate">
                 {profile?.shopName || user?.displayName}
               </p>
               <p className="text-xs text-neutral-500 truncate">{user?.email}</p>
@@ -104,7 +104,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </div>
           <Button 
             variant="ghost" 
-            className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20"
+            className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50"
             onClick={handleLogout}
           >
             <LogOut className="w-5 h-5 mr-3" />
@@ -115,7 +115,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header className="h-16 border-b border-neutral-200 bg-white dark:bg-neutral-900 dark:border-neutral-800 flex items-center justify-between px-6 lg:px-8">
+        <header className="h-16 border-b border-neutral-200 bg-white flex items-center justify-between px-6 lg:px-8">
           <div className="flex items-center gap-4">
             <Button 
               variant="ghost" 
@@ -125,7 +125,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             >
               {isSidebarOpen ? <X /> : <Menu />}
             </Button>
-            <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50 truncate capitalize">
+            <h1 className="text-lg font-semibold text-neutral-900 truncate capitalize">
               {location.pathname === '/dashboard' ? 'Dashboard' : location.pathname.substring(1).replace('/', ' ')}
             </h1>
           </div>
@@ -135,7 +135,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <div className="flex-1 overflow-auto bg-neutral-50/50 dark:bg-neutral-950/50">
+        <div className="flex-1 overflow-auto bg-neutral-50/50">
           <div className="max-w-7xl mx-auto p-6 lg:p-8">
             {children}
           </div>

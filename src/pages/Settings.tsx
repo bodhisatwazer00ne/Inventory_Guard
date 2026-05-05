@@ -97,13 +97,13 @@ export default function Settings() {
   return (
     <div className="max-w-4xl mx-auto space-y-8 p-4 md:p-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">Account Settings</h1>
-        <p className="text-neutral-500 dark:text-neutral-400 mt-2">Manage your shop profile and account permissions.</p>
+        <h1 className="text-3xl font-bold tracking-tight text-neutral-900">Account Settings</h1>
+        <p className="text-neutral-500 mt-2">Manage your shop profile and account permissions.</p>
       </div>
 
       <div className="grid gap-6">
-        <Card className="border-neutral-200 dark:border-neutral-800 shadow-sm overflow-hidden">
-          <CardHeader className="bg-neutral-50/50 dark:bg-neutral-900/50 border-b border-neutral-200 dark:border-neutral-800">
+        <Card className="border-neutral-200 shadow-sm overflow-hidden">
+          <CardHeader className="bg-neutral-50/50 border-b border-neutral-200">
             <div className="flex items-center gap-2">
               <Store className="w-5 h-5 text-teal-600" />
               <CardTitle>Shop Profile</CardTitle>
@@ -127,12 +127,12 @@ export default function Settings() {
                   id="email" 
                   value={user?.email || ''} 
                   disabled 
-                  className="bg-neutral-50 dark:bg-neutral-900 text-neutral-500"
+                  className="bg-neutral-50 text-neutral-500"
                 />
                 <p className="text-[10px] text-neutral-400">Email is managed via your Google Account.</p>
               </div>
             </CardContent>
-            <CardFooter className="bg-neutral-50/30 dark:bg-neutral-900/10 border-t border-neutral-200 dark:border-neutral-800 py-3">
+            <CardFooter className="bg-neutral-50/30 border-t border-neutral-200 py-3">
               <Button type="submit" disabled={loading} className="bg-teal-600 hover:bg-teal-700">
                 {loading ? 'Saving...' : 'Save Changes'}
               </Button>
@@ -140,18 +140,18 @@ export default function Settings() {
           </form>
         </Card>
 
-        <Card className="border-neutral-200 dark:border-neutral-800 shadow-sm overflow-hidden border-teal-200 dark:border-teal-900/50">
-          <CardHeader className="bg-teal-50/50 dark:bg-teal-950/20 border-b border-teal-100 dark:border-teal-900/30">
-            <div className="flex items-center gap-2 text-teal-700 dark:text-teal-400">
+        <Card className="border-neutral-200 shadow-sm overflow-hidden border-teal-200">
+          <CardHeader className="bg-teal-50/50 border-b border-teal-100">
+            <div className="flex items-center gap-2 text-teal-700">
               <Shield className="w-5 h-5" />
-              <CardTitle className="text-teal-900 dark:text-teal-100">Role & Permissions</CardTitle>
+              <CardTitle className="text-teal-900">Role & Permissions</CardTitle>
             </div>
-            <CardDescription className="text-teal-700/70 dark:text-teal-500/70">Switch between Admin and Sales roles for testing purposes.</CardDescription>
+            <CardDescription className="text-teal-700/70">Switch between Admin and Sales roles for testing purposes.</CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between p-4 bg-white dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 rounded-xl">
+            <div className="flex items-center justify-between p-4 bg-white border border-neutral-200 rounded-xl">
               <div className="space-y-1">
-                <p className="font-semibold text-neutral-900 dark:text-neutral-50">Current Role: {profile?.role}</p>
+                <p className="font-semibold text-neutral-900">Current Role: {profile?.role}</p>
                 <p className="text-sm text-neutral-500">
                   {profile?.role === 'ADMIN' 
                     ? 'Admins can manage inventory, customers, and view all reports.' 
@@ -170,18 +170,18 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        <Card className="border-rose-200 dark:border-rose-900 shadow-sm overflow-hidden border-2">
-          <CardHeader className="bg-rose-50 dark:bg-rose-950/20 border-b border-rose-100 dark:border-rose-900/30">
-            <div className="flex items-center gap-2 text-rose-700 dark:text-rose-400">
+        <Card className="border-rose-200 shadow-sm overflow-hidden border-2">
+          <CardHeader className="bg-rose-50 border-b border-rose-100">
+            <div className="flex items-center gap-2 text-rose-700">
               <AlertTriangle className="w-5 h-5" />
               <CardTitle>Danger Zone</CardTitle>
             </div>
             <CardDescription className="text-rose-600">Permanently delete all business records.</CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between p-4 bg-rose-50/30 dark:bg-rose-900/10 border border-rose-100 dark:border-rose-800 rounded-xl">
+            <div className="flex items-center justify-between p-4 bg-rose-50/30 border border-rose-100 rounded-xl">
               <div className="space-y-1">
-                <p className="font-semibold text-rose-900 dark:text-rose-50">Reset All Shop Data</p>
+                <p className="font-semibold text-rose-900">Reset All Shop Data</p>
                 <p className="text-sm text-rose-600/80">
                   Deletes all products, customers, transactions, and ledger entries. 
                   Your account profile and shop name will be kept.

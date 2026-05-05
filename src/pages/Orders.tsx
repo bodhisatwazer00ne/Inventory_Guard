@@ -92,16 +92,16 @@ export default function OrderHistory() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50 flex items-center gap-2">
+          <h1 className="text-3xl font-bold tracking-tight text-neutral-900 flex items-center gap-2">
             <Receipt className="w-8 h-8 text-teal-600" />
             Order History
           </h1>
-          <p className="text-neutral-500 dark:text-neutral-400 mt-2">View and track all past sales transactions.</p>
+          <p className="text-neutral-500 mt-2">View and track all past sales transactions.</p>
         </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-4">
-        <div className="flex items-center gap-2 flex-1 max-w-sm bg-white dark:bg-neutral-900 border rounded-lg px-3 py-2">
+        <div className="flex items-center gap-2 flex-1 max-w-sm bg-white border rounded-lg px-3 py-2">
           <Search className="w-4 h-4 text-neutral-400" />
           <Input 
             placeholder="Search orders or customers..." 
@@ -110,14 +110,14 @@ export default function OrderHistory() {
             className="border-none p-0 focus-visible:ring-0 h-auto"
           />
         </div>
-        <div className="flex flex-wrap items-center gap-3 bg-white dark:bg-neutral-900 border rounded-lg px-3 py-2">
+        <div className="flex flex-wrap items-center gap-3 bg-white border rounded-lg px-3 py-2">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-bold text-neutral-400 uppercase">From</span>
             <Input 
               type="date"
               value={startDate}
               onChange={e => setStartDate(e.target.value)}
-              className="border-none p-0 focus-visible:ring-0 h-auto text-xs w-[120px] dark:bg-transparent"
+              className="border-none p-0 focus-visible:ring-0 h-auto text-xs w-[120px] bg-transparent"
             />
           </div>
           <div className="h-4 w-px bg-neutral-200 hidden md:block"></div>
@@ -127,13 +127,13 @@ export default function OrderHistory() {
               type="date"
               value={endDate}
               onChange={e => setEndDate(e.target.value)}
-              className="border-none p-0 focus-visible:ring-0 h-auto text-xs w-[120px] dark:bg-transparent"
+              className="border-none p-0 focus-visible:ring-0 h-auto text-xs w-[120px] bg-transparent"
             />
           </div>
         </div>
       </div>
 
-      <div className="bg-white dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-white border border-neutral-200 rounded-xl shadow-sm overflow-hidden">
         <Table>
           <TableHeader className="bg-neutral-50/50">
             <TableRow>

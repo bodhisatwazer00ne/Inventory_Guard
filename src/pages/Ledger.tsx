@@ -182,14 +182,14 @@ export default function Ledger() {
           />
         </div>
         
-        <div className="flex flex-wrap items-center gap-3 bg-white dark:bg-neutral-900 border rounded-lg px-3 py-1">
+        <div className="flex flex-wrap items-center gap-3 bg-white border rounded-lg px-3 py-1">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-bold text-neutral-400 uppercase">From</span>
             <Input 
               type="date"
               value={startDate}
               onChange={e => setStartDate(e.target.value)}
-              className="border-none p-0 focus-visible:ring-0 h-auto text-xs w-[110px] dark:bg-transparent"
+              className="border-none p-0 focus-visible:ring-0 h-auto text-xs w-[110px] bg-transparent"
             />
           </div>
           <div className="h-4 w-px bg-neutral-200 hidden md:block"></div>
@@ -199,7 +199,7 @@ export default function Ledger() {
               type="date"
               value={endDate}
               onChange={e => setEndDate(e.target.value)}
-              className="border-none p-0 focus-visible:ring-0 h-auto text-xs w-[110px] dark:bg-transparent"
+              className="border-none p-0 focus-visible:ring-0 h-auto text-xs w-[110px] bg-transparent"
             />
           </div>
         </div>
@@ -212,7 +212,7 @@ export default function Ledger() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden">
+      <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
@@ -296,7 +296,7 @@ export default function Ledger() {
                       <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="text-teal-600 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                        className="text-teal-600 hover:bg-neutral-100"
                         onClick={() => sendReminder(ledger.customerId)}
                       >
                         <Send className="w-4 h-4" />

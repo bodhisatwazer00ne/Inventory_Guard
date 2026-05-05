@@ -153,6 +153,11 @@ export default function Customers() {
 
   const handlePayment = async () => {
     if (!selectedCustomer || paymentAmount <= 0 || !shopId) return;
+
+    if (paymentAmount > (selectedCustomer.totalDue || 0)) {
+      toast.error(`Payment amount (₹${paymentAmount}) cannot exceed total due (₹${selectedCustomer.totalDue})`);
+      return;
+    }
     
     try {
       const batch = writeBatch(db);
@@ -326,10 +331,10 @@ export default function Customers() {
           </div>
         ) : (
           filteredCustomers.map((customer) => (
-            <Card key={customer.id} className="border-none shadow-sm hover:shadow-md transition-all group dark:bg-neutral-900 overflow-hidden">
+            <Card key={customer.id} className="border-none shadow-sm hover:shadow-md transition-all group overflow-hidden">
               <CardHeader className="flex flex-row items-center gap-4 pb-4">
-                <Avatar className="w-12 h-12 border border-neutral-100 dark:border-neutral-800">
-                  <AvatarFallback className="bg-teal-50 text-teal-700 font-bold dark:bg-teal-900/40">
+                <Avatar className="w-12 h-12 border border-neutral-100">
+                  <AvatarFallback className="bg-teal-50 text-teal-700 font-bold">
                     {customer.name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
@@ -348,20 +353,20 @@ export default function Customers() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   {customer.email && (
-                    <div className="flex items-center gap-3 text-sm text-neutral-600 dark:text-neutral-400">
+                    <div className="flex items-center gap-3 text-sm text-neutral-600">
                       <Mail className="w-4 h-4" />
                       <span className="truncate">{customer.email}</span>
                     </div>
                   )}
                   {customer.phone && (
-                    <div className="flex items-center gap-3 text-sm text-neutral-600 dark:text-neutral-400">
+                    <div className="flex items-center gap-3 text-sm text-neutral-600">
                       <Phone className="w-4 h-4" />
                       <span>{customer.phone}</span>
                     </div>
                   )}
                 </div>
 
-                <div className="pt-4 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
+                <div className="pt-4 border-t border-neutral-100 flex items-center justify-between">
                   <div className="flex flex-col">
                     <span className="text-xs text-neutral-500 uppercase tracking-wider font-semibold">Total Due</span>
                     <span className={`text-xl font-bold ${(customer.totalDue || 0) > 0 ? 'text-rose-600' : 'text-teal-600'}`}>
@@ -414,7 +419,7 @@ export default function Customers() {
           </DialogHeader>
 
           <div className="py-4 space-y-6">
-            <div className="flex flex-col sm:flex-row items-end gap-4 p-4 bg-neutral-50 dark:bg-neutral-900 rounded-xl">
+            <div className="flex flex-col sm:flex-row items-end gap-4 p-4 bg-neutral-50 rounded-xl">
               <div className="flex-1 space-y-2">
                 <Label className="text-xs text-neutral-500 uppercase tracking-wider font-semibold">Report Period</Label>
                 <div className="flex gap-2">

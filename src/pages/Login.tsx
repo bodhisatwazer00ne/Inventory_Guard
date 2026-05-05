@@ -15,22 +15,22 @@ export default function Login() {
   if (user) return <Navigate to="/dashboard" replace />;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-950 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-50 p-4">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center space-y-2">
           <div className="mx-auto w-12 h-12 rounded-xl bg-teal-600 flex items-center justify-center mb-4">
             <Receipt className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">
+          <h1 className="text-3xl font-bold tracking-tight text-neutral-900">
             Welcome to InventoryGuard
           </h1>
-          <p className="text-neutral-500 dark:text-neutral-400">
+          <p className="text-neutral-500">
             The smart way to manage your shop's inventory and credit.
           </p>
         </div>
 
-        <Card className="border-neutral-200 dark:border-neutral-800 shadow-xl overflow-hidden">
-          <CardHeader className="text-center bg-white dark:bg-neutral-900/50 pb-8">
+        <Card className="border-neutral-200 shadow-xl overflow-hidden">
+          <CardHeader className="text-center bg-white pb-8">
             <CardTitle>Sign In & Choose Your Role</CardTitle>
             <CardDescription className="max-w-xs mx-auto">
               Select your role first, then sign in using Google or try the demo accounts.
@@ -54,7 +54,7 @@ export default function Login() {
                 </TabsList>
               </Tabs>
               
-              <div className="p-3 bg-neutral-50 dark:bg-neutral-900/80 rounded-lg text-[10px] text-neutral-500 dark:text-neutral-400 flex items-start gap-2 border border-neutral-100 dark:border-neutral-800">
+              <div className="p-3 bg-neutral-50 rounded-lg text-[10px] text-neutral-500 flex items-start gap-2 border border-neutral-100">
                 <Info className="w-3 h-3 mt-0.5 text-teal-600 flex-shrink-0" />
                 <p>
                   {selectedRole === 'ADMIN' 
@@ -65,7 +65,7 @@ export default function Login() {
             </div>
 
             <Button 
-              className="w-full bg-white text-neutral-900 border-neutral-200 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-700 h-12 shadow-sm"
+              className="w-full bg-white text-neutral-900 border-neutral-200 hover:bg-neutral-50 h-12 shadow-sm"
               onClick={() => loginWithGoogle(selectedRole)}
               size="lg"
             >
@@ -87,21 +87,21 @@ export default function Login() {
             <div className="grid grid-cols-2 gap-3">
               <Button 
                 variant="outline" 
-                className="text-xs h-10 border-teal-100 hover:bg-teal-50 hover:text-teal-700 dark:border-teal-900/30"
+                className="text-xs h-10 border-teal-100 hover:bg-teal-50 hover:text-teal-700"
                 onClick={() => loginAnonymously('ADMIN')}
               >
                 Demo Admin
               </Button>
               <Button 
                 variant="outline" 
-                className="text-xs h-10 border-neutral-200 hover:bg-neutral-50 dark:border-neutral-800"
+                className="text-xs h-10 border-neutral-200 hover:bg-neutral-50"
                 onClick={() => loginAnonymously('SALES')}
               >
                 Demo Sales
               </Button>
             </div>
           </CardContent>
-          <CardFooter className="bg-neutral-50 dark:bg-neutral-900/50 border-t border-neutral-100 dark:border-neutral-800">
+          <CardFooter className="bg-neutral-50 border-t border-neutral-100">
             <p className="text-center text-[10px] text-neutral-500 w-full py-1">
               Demo accounts use temporary sessions. Data may be reset periodically.
             </p>

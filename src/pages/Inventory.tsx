@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { collection, query, where, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { db, handleFirestoreError, OperationType } from '../firebase/config';
+import { db } from '../firebase/config';
+import { handleFirestoreError, OperationType } from '../firebase/utils';
 import { useAuth } from '../hooks/useAuth';
 import { 
   Package, 
@@ -103,6 +104,19 @@ export default function Inventory() {
     if (!user) return;
 
     try {
+      if (formData.price < 0) {
+        toast.error("Price cannot be negative");
+        return;
+      }
+      if (formData.quantity < 0) {
+        toast.error("Quantity cannot be negative");
+        return;
+      }
+      if (formData.lowStockThreshold < 0) {
+        toast.error("Low stock threshold cannot be negative");
+        return;
+      }
+
       const data = {
         ...formData,
         shopId: shopId,
@@ -163,14 +177,14 @@ export default function Inventory() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div className="flex flex-wrap items-center gap-3 bg-white dark:bg-neutral-900 border rounded-lg px-3 py-2">
+        <div className="flex flex-wrap items-center gap-3 bg-white border rounded-lg px-3 py-2">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-bold text-neutral-400 uppercase">From</span>
             <Input 
               type="date"
               value={startDate}
               onChange={e => setStartDate(e.target.value)}
-              className="border-none p-0 focus-visible:ring-0 h-auto text-xs w-[120px] dark:bg-transparent"
+              className="border-none p-0 focus-visible:ring-0 h-auto text-xs w-[120px] bg-transparent"
             />
           </div>
           <div className="h-4 w-px bg-neutral-200 hidden md:block"></div>
@@ -180,7 +194,7 @@ export default function Inventory() {
               type="date"
               value={endDate}
               onChange={e => setEndDate(e.target.value)}
-              className="border-none p-0 focus-visible:ring-0 h-auto text-xs w-[120px] dark:bg-transparent"
+              className="border-none p-0 focus-visible:ring-0 h-auto text-xs w-[120px] bg-transparent"
             />
           </div>
         </div>
@@ -282,10 +296,10 @@ export default function Inventory() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden">
+      <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-neutral-50/50 dark:bg-neutral-800/50">
+            <TableRow className="bg-neutral-50/50">
               <TableHead className="w-[300px]">Product</TableHead>
               <TableHead>Category</TableHead>
               <TableHead>Price</TableHead>
@@ -310,7 +324,7 @@ export default function Inventory() {
                   <TableRow key={product.id}>
                     <TableCell>
                       <div className="flex flex-col">
-                        <span className="font-medium text-neutral-900 dark:text-neutral-50">{product.name}</span>
+                        <span className="font-medium text-neutral-900">{product.name}</span>
                         <span className="text-xs text-neutral-500 font-mono uppercase">{product.sku || 'No SKU'}</span>
                       </div>
                     </TableCell>
@@ -322,7 +336,7 @@ export default function Inventory() {
                     <TableCell className="font-medium">₹{product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <span className={`font-semibold ${isLowStock ? 'text-amber-600' : 'text-neutral-900 dark:text-neutral-50'}`}>
+                        <span className={`font-semibold ${isLowStock ? 'text-amber-600' : 'text-neutral-900'}`}>
                           {product.quantity}
                         </span>
                         {isAdmin && (
@@ -331,13 +345,22 @@ export default function Inventory() {
                             size="icon" 
                             className="h-6 w-6 text-teal-600 hover:bg-teal-50"
                             onClick={() => {
-                              const amount = prompt(`Add stock for ${product.name}:`);
-                              if (amount && !isNaN(parseInt(amount))) {
+                              const amountStr = prompt(`Adjustment for ${product.name} (use negative for deduction):`);
+                              if (amountStr !== null) {
+                                const amount = parseInt(amountStr);
+                                if (isNaN(amount)) {
+                                  toast.error("Invalid number entered");
+                                  return;
+                                }
+                                if (product.quantity + amount < 0) {
+                                  toast.error("Adjusted quantity cannot be negative");
+                                  return;
+                                }
                                 updateDoc(doc(db, 'products', product.id), {
-                                  quantity: product.quantity + parseInt(amount),
+                                  quantity: product.quantity + amount,
                                   updatedAt: new Date().toISOString()
                                 });
-                                toast.success(`Added ${amount} to ${product.name}`);
+                                toast.success(`${amount >= 0 ? 'Added' : 'Subtracted'} ${Math.abs(amount)} ${amount >= 0 ? 'to' : 'from'} ${product.name}`);
                               }
                             }}
                           >
