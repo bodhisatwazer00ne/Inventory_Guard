@@ -45,7 +45,7 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      return isSignedIn() && (isAnonymous() || getUserData().role == 'ADMIN');
+      return isSignedIn() && getUserData().role == 'ADMIN';
     }
 
     function isSales() {
@@ -58,7 +58,7 @@ service cloud.firestore {
       allow get: if isSignedIn() && request.auth.uid == userId;
       allow create: if isSignedIn() && request.auth.uid == userId;
       allow update: if isSignedIn() && request.auth.uid == userId
-        && incoming().diff(existing()).affectedKeys().hasOnly(['shopName', 'email', 'updatedAt']);
+        && incoming().diff(existing()).affectedKeys().hasOnly(['shopName', 'email', 'updatedAt', 'role']);
     }
 
     match /products/{productId} {
@@ -95,6 +95,7 @@ service cloud.firestore {
       allow get: if isSignedIn() && canAccessShop(existing().shopId);
       allow create: if isVerified() && canAccessShop(incoming().shopId);
       allow update: if isVerified() && canAccessShop(existing().shopId);
+      allow delete: if isVerified() && isAdmin() && canAccessShop(existing().shopId);
     }
 
     match /ledgerEntries/{ledgerId} {
@@ -105,6 +106,7 @@ service cloud.firestore {
       allow get: if isSignedIn() && canAccessShop(existing().shopId);
       allow create: if isVerified() && canAccessShop(incoming().shopId);
       allow update: if isVerified() && canAccessShop(existing().shopId);
+      allow delete: if isVerified() && isAdmin() && canAccessShop(existing().shopId);
     }
 
     match /payments/{paymentId} {
@@ -114,6 +116,7 @@ service cloud.firestore {
       );
       allow get: if isSignedIn() && canAccessShop(existing().shopId);
       allow create: if isVerified() && canAccessShop(incoming().shopId);
+      allow delete: if isVerified() && isAdmin() && canAccessShop(existing().shopId);
     }
   }
 }

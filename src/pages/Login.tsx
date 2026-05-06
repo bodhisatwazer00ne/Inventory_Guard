@@ -46,10 +46,10 @@ export default function Login() {
               >
                 <TabsList className="grid w-full grid-cols-2 h-12">
                   <TabsTrigger value="ADMIN" className="flex items-center gap-2">
-                    <Shield className="w-4 h-4" /> Admin
+                    <Shield className="w-4 h-4" /> Owner
                   </TabsTrigger>
                   <TabsTrigger value="SALES" className="flex items-center gap-2">
-                    <User className="w-4 h-4" /> Sales
+                    <User className="w-4 h-4" /> Salesperson
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -58,8 +58,8 @@ export default function Login() {
                 <Info className="w-3 h-3 mt-0.5 text-teal-600 flex-shrink-0" />
                 <p>
                   {selectedRole === 'ADMIN' 
-                    ? 'ADMIN: Full access to everything. Manage inventory, view charts, and register new staff.' 
-                    : 'SALES: Limited access. Can create bills and manage ledger entries, but cannot delete inventory.'}
+                    ? 'OWNER: Full access to everything. Manage inventory, view charts, and register new staff.' 
+                    : 'SALESPERSON: Limited access. Can create bills and manage ledger entries, but cannot delete inventory.'}
                 </p>
               </div>
             </div>
@@ -84,22 +84,22 @@ export default function Login() {
               <Separator className="grow" />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <Button 
-                variant="outline" 
-                className="text-xs h-10 border-teal-100 hover:bg-teal-50 hover:text-teal-700"
-                onClick={() => loginAnonymously('ADMIN')}
-              >
-                Demo Admin
-              </Button>
-              <Button 
-                variant="outline" 
-                className="text-xs h-10 border-neutral-200 hover:bg-neutral-50"
-                onClick={() => loginAnonymously('SALES')}
-              >
-                Demo Sales
-              </Button>
-            </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Button 
+                  variant="outline" 
+                  className="text-xs h-10 border-teal-100 hover:bg-teal-50 hover:text-teal-700"
+                  onClick={() => loginAnonymously('ADMIN')}
+                >
+                  Demo Owner
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="text-xs h-10 border-neutral-200 hover:bg-neutral-50"
+                  onClick={() => loginAnonymously('SALES')}
+                >
+                  Demo Salesperson
+                </Button>
+              </div>
           </CardContent>
           <CardFooter className="bg-neutral-50 border-t border-neutral-100">
             <p className="text-center text-[10px] text-neutral-500 w-full py-1">

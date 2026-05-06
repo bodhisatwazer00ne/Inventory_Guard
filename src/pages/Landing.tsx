@@ -8,8 +8,6 @@ import { useAuth } from '../hooks/useAuth';
 export default function Landing() {
   const { user } = useAuth();
 
-  if (user) return <Navigate to="/dashboard" replace />;
-
   return (
     <div className="min-h-screen bg-white font-sans selection:bg-teal-100 selection:text-teal-900">
       {/* Navigation */}
@@ -67,7 +65,7 @@ export default function Landing() {
             Stop losing money on forgotten credits. Kapase Kirana helps small business owners track stock, sales, and outstanding dues with zero effort.
           </motion.p>
           
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}

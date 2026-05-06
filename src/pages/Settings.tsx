@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Label } from '../components/ui/label';
 import { Input } from '../components/ui/input';
 import { toast } from 'sonner';
-import { Shield, User, Store, LogOut, Trash2, AlertTriangle } from 'lucide-react';
+import { Shield, User, Store, LogOut, Trash2, AlertTriangle, RefreshCcw } from 'lucide-react';
 import { auth } from '../firebase/config';
 import { signOut } from 'firebase/auth';
 
@@ -43,7 +43,6 @@ export default function Settings() {
         role: newRole
       });
       toast.success(`Role switched to ${newRole}. The page will refresh shortly.`);
-      // Minor delay to let the toast show before the auth hook updates or user manually refreshes
     } catch (error) {
       toast.error('Failed to switch role');
     } finally {
@@ -52,43 +51,68 @@ export default function Settings() {
   };
 
   const handleResetData = async () => {
-    const shopId = profile?.shopId || (user?.isAnonymous ? 'demo-shop-v1' : null);
-    if (!shopId) return;
+    const shopId = profile?.shopId || user?.uid;
     
-    const confirm = window.confirm("Are you absolutely sure? This will delete ALL products, customers, orders, and payment records for your shop. This action CANNOT be undone.");
-    if (!confirm) return;
+    if (!shopId) {
+      console.error("No shopId found:", { profile, user });
+      toast.error("Could not determine Shop ID. Please try logging out and back in.");
+      return;
+    }
+    
+    const confirmed = window.confirm("Are you ABSOLUTELY sure? This will PERMANENTLY delete all Products, Customers, Orders, Ledgers, and Payments for your shop. This action cannot be undone.");
+    if (!confirmed) return;
 
     setLoading(true);
+    const results: string[] = [];
+    
     try {
       const collections = ['products', 'customers', 'orders', 'payments', 'ledgerEntries'];
       
       for (const collName of collections) {
-        const q = query(collection(db, collName), where('shopId', '==', shopId));
-        const snap = await getDocs(q);
-        
-        let batch = writeBatch(db);
-        let count = 0;
-        
-        for (const d of snap.docs) {
-          batch.delete(d.ref);
-          count++;
-          // Firestore batches have a limit of 500 operations
-          if (count >= 400) {
-            await batch.commit();
-            batch = writeBatch(db);
-            count = 0;
+        try {
+          const q = query(collection(db, collName), where('shopId', '==', shopId));
+          const snap = await getDocs(q);
+          
+          if (snap.empty) {
+            results.push(`${collName}: 0`);
+            continue;
           }
-        }
-        
-        if (count > 0) {
-          await batch.commit();
+
+          let batch = writeBatch(db);
+          let count = 0;
+          let deletedInColl = 0;
+          
+          for (const d of snap.docs) {
+            batch.delete(d.ref);
+            count++;
+            deletedInColl++;
+            if (count >= 400) {
+              await batch.commit();
+              batch = writeBatch(db);
+              count = 0;
+            }
+          }
+          
+          if (count > 0) {
+            await batch.commit();
+          }
+          results.push(`${collName}: ${deletedInColl}`);
+        } catch (err: any) {
+          console.error(`Error clearing ${collName}:`, err);
+          results.push(`${collName}: Error (${err.message})`);
         }
       }
 
-      toast.success('All shop data has been cleared.');
-    } catch (error) {
-      console.error("Reset error:", error);
-      toast.error('Failed to clear data');
+      console.log("Reset Success! Summary:", results.join(', '));
+      toast.success('Shop data has been reset successfully.');
+      
+      // Force refresh to clear cache
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } catch (error: any) {
+      console.error("Reset Master error:", error);
+      toast.error('Failed to clear data: ' + (error.message || 'Unknown error'));
     } finally {
       setLoading(false);
     }
@@ -140,65 +164,69 @@ export default function Settings() {
           </form>
         </Card>
 
-        <Card className="border-neutral-200 shadow-sm overflow-hidden border-teal-200">
-          <CardHeader className="bg-teal-50/50 border-b border-teal-100">
-            <div className="flex items-center gap-2 text-teal-700">
-              <Shield className="w-5 h-5" />
-              <CardTitle className="text-teal-900">Role & Permissions</CardTitle>
-            </div>
-            <CardDescription className="text-teal-700/70">Switch between Admin and Sales roles for testing purposes.</CardDescription>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <div className="flex flex-col sm:flex-row items-center justify-between p-4 bg-white border border-neutral-200 rounded-xl gap-4">
-              <div className="space-y-1 text-center sm:text-left">
-                <p className="font-semibold text-neutral-900">Current Role: {profile?.role}</p>
-                <p className="text-sm text-neutral-500">
-                  {profile?.role === 'ADMIN' 
-                    ? 'Admins can manage inventory, customers, and view all reports.' 
-                    : 'Sales staff can create bills and manage ledger entries only.'}
-                </p>
+        {profile?.role === 'ADMIN' && (
+          <Card className="border-neutral-200 shadow-sm overflow-hidden border-teal-200">
+            <CardHeader className="bg-teal-50/50 border-b border-teal-100">
+              <div className="flex items-center gap-2 text-teal-700">
+                <Shield className="w-5 h-5" />
+                <CardTitle className="text-teal-900">Role & Permissions</CardTitle>
               </div>
-              <Button 
-                variant="outline" 
-                onClick={toggleRole} 
-                disabled={loading}
-                className="w-full sm:w-auto border-teal-200 text-teal-700 hover:bg-teal-50"
-              >
-                Switch to {profile?.role === 'ADMIN' ? 'Sales' : 'Admin'}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+              <CardDescription className="text-teal-700/70">Switch between Owner and Salesperson roles for testing purposes.</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="flex flex-col sm:flex-row items-center justify-between p-4 bg-white border border-neutral-200 rounded-xl gap-4">
+                <div className="space-y-1 text-center sm:text-left">
+                  <p className="font-semibold text-neutral-900">Current Role: {profile?.role === 'ADMIN' ? 'Owner' : 'Salesperson'}</p>
+                  <p className="text-sm text-neutral-500">
+                    {profile?.role === 'ADMIN' 
+                      ? 'Owners can manage inventory, customers, and view all reports.' 
+                      : 'Sales staff can create bills and manage ledger entries only.'}
+                  </p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  onClick={toggleRole} 
+                  disabled={loading}
+                  className="w-full sm:w-auto border-teal-200 text-teal-700 hover:bg-teal-50"
+                >
+                  Switch to {profile?.role === 'ADMIN' ? 'Salesperson' : 'Owner'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
-        <Card className="border-rose-200 shadow-sm overflow-hidden border-2">
-          <CardHeader className="bg-rose-50 border-b border-rose-100">
-            <div className="flex items-center gap-2 text-rose-700">
-              <AlertTriangle className="w-5 h-5" />
-              <CardTitle>Danger Zone</CardTitle>
-            </div>
-            <CardDescription className="text-rose-600">Permanently delete all business records.</CardDescription>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <div className="flex flex-col sm:flex-row items-center justify-between p-4 bg-rose-50/30 border border-rose-100 rounded-xl gap-4">
-              <div className="space-y-1 text-center sm:text-left">
-                <p className="font-semibold text-rose-900">Reset All Shop Data</p>
-                <p className="text-sm text-rose-600/80">
-                  Deletes all products, customers, transactions, and ledger entries. 
-                  Your account profile and shop name will be kept.
-                </p>
+        {profile?.role === 'ADMIN' && (
+          <Card className="border-rose-200 shadow-sm overflow-hidden border-2">
+            <CardHeader className="bg-rose-50 border-b border-rose-100">
+              <div className="flex items-center gap-2 text-rose-700">
+                <AlertTriangle className="w-5 h-5" />
+                <CardTitle>Danger Zone</CardTitle>
               </div>
-              <Button 
-                variant="destructive" 
-                onClick={handleResetData} 
-                disabled={loading}
-                className="w-full sm:w-auto bg-rose-600 hover:bg-rose-700"
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Reset Data
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+              <CardDescription className="text-rose-600">Permanently delete all business records.</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="flex flex-col sm:flex-row items-center justify-between p-4 bg-rose-50/30 border border-rose-100 rounded-xl gap-4">
+                <div className="space-y-1 text-center sm:text-left">
+                  <p className="font-semibold text-rose-900">Reset All Shop Data</p>
+                  <p className="text-sm text-rose-600/80">
+                    Deletes all products, customers, transactions, and ledger entries. 
+                    Your account profile and shop name will be kept.
+                  </p>
+                </div>
+                <Button 
+                  variant="destructive" 
+                  onClick={handleResetData} 
+                  disabled={loading}
+                  className="w-full sm:w-auto bg-rose-600 hover:bg-rose-700"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Reset Data
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="pt-4 flex justify-end">
           <Button 
