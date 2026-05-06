@@ -6,6 +6,7 @@ import { Receipt, Shield, User, Info } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Separator } from '../components/ui/separator';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 
 export default function Login() {
   const { user, loginWithGoogle, loginAnonymously, loading } = useAuth();
@@ -15,7 +16,11 @@ export default function Login() {
   if (user) return <Navigate to="/dashboard" replace />;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-50 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-neutral-50 p-4 relative">
+      <div className="absolute top-4 right-4 sm:top-8 sm:right-8">
+        <LanguageSwitcher />
+      </div>
+      
       <div className="max-w-md w-full space-y-8">
         <div className="text-center space-y-2">
           <div className="mx-auto w-12 h-12 rounded-xl bg-teal-600 flex items-center justify-center mb-4">

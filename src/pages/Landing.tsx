@@ -4,9 +4,12 @@ import { Button } from '../components/ui/button';
 import { Receipt, Shield, Users, BarChart3, ChevronRight, Package, CreditCard, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useAuth } from '../hooks/useAuth';
+import { useLanguage } from '../contexts/LanguageContext';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 
 export default function Landing() {
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-white font-sans selection:bg-teal-100 selection:text-teal-900">
@@ -22,11 +25,13 @@ export default function Landing() {
             </span>
           </div>
           <div className="flex items-center gap-4">
+            <LanguageSwitcher />
+            <div className="hidden sm:block h-6 w-px bg-neutral-100 mx-2" />
             <Link to="/login">
               <Button variant="ghost" className="text-neutral-600">Sign In</Button>
             </Link>
             <Link to="/login">
-              <Button className="bg-teal-600 hover:bg-teal-700 text-white rounded-full px-6 shadow-lg shadow-teal-500/20 transition-all hover:scale-105 active:scale-95">
+              <Button className="bg-teal-600 hover:bg-teal-700 text-white rounded-full px-6 shadow-lg shadow-teal-500/20 transition-all hover:scale-105 active:scale-95 text-xs sm:text-sm">
                 Get Started
               </Button>
             </Link>

@@ -43,8 +43,10 @@ import { handleFirestoreError, OperationType } from '../firebase/utils';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { generateBillPdf, generateCustomerHistoryPdf } from '../lib/pdfGenerator';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Customers() {
+  const { t } = useLanguage();
   const { user, profile } = useAuth();
   const isAdmin = profile?.role === 'ADMIN';
   const shopId = profile?.shopId;

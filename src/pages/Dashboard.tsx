@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { useAuth } from '../hooks/useAuth';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   Package, 
   AlertTriangle, 
@@ -22,6 +23,7 @@ import { format } from 'date-fns';
 import { generatePdfReport } from '../lib/pdfGenerator';
 
 export default function Dashboard() {
+  const { t } = useLanguage();
   const { user, profile } = useAuth();
   const shopId = profile?.shopId;
   const [dateFilter, setDateFilter] = useState<'today' | 'custom'>('today');
@@ -201,8 +203,8 @@ export default function Dashboard() {
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-neutral-900 tracking-tight">Dashboard Overview</h1>
-          <p className="text-neutral-500 mt-1">Status: {dateFilter === 'today' ? 'Today\'s Summary' : `From ${startDate} To ${endDate}`}</p>
+          <h1 className="text-3xl font-bold text-neutral-900 tracking-tight">{t('dashboard_overview')}</h1>
+          <p className="text-neutral-500 mt-1">{t('today')}: {dateFilter === 'today' ? format(new Date(), 'dd MMM yyyy') : `${startDate} - ${endDate}`}</p>
         </div>
       </div>
 
@@ -210,9 +212,9 @@ export default function Dashboard() {
           <div className="flex flex-col gap-1 text-center xl:text-left">
             <h2 className="text-lg font-bold text-neutral-900 flex items-center justify-center xl:justify-start gap-2">
               <TrendingUp className="w-5 h-5 text-teal-600" />
-              Performance Insights
+              {t('performance_insights')}
             </h2>
-            <p className="text-sm text-neutral-500">Summary matching your selected time range.</p>
+            <p className="text-sm text-neutral-500">{t('summary_range')}</p>
           </div>
           
           <div className="flex flex-col md:flex-row items-center gap-4 w-full xl:w-auto">
@@ -224,7 +226,7 @@ export default function Dashboard() {
                 className={`flex-1 sm:flex-none h-9 px-4 rounded-lg text-sm font-semibold transition-all ${dateFilter === 'today' ? 'bg-white shadow-sm text-teal-600' : 'text-neutral-500'}`}
                 onClick={() => setDateFilter('today')}
               >
-                Today
+                {t('today')}
               </Button>
               <Button 
                 variant="ghost" 
@@ -232,7 +234,7 @@ export default function Dashboard() {
                 className={`flex-1 sm:flex-none h-9 px-4 rounded-lg text-sm font-semibold transition-all ${dateFilter === 'custom' ? 'bg-white shadow-sm text-teal-600' : 'text-neutral-500'}`}
                 onClick={() => setDateFilter('custom')}
               >
-                Custom Range
+                {t('custom_range')}
               </Button>
             </div>
 
@@ -288,7 +290,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-teal-100 uppercase tracking-wider">
-                  Total Sales ({startDate === endDate ? format(new Date(startDate), 'dd MMM') : `${format(new Date(startDate), 'dd MMM')} - ${format(new Date(endDate), 'dd MMM')}`})
+                  {t('total_sales')} ({startDate === endDate ? format(new Date(startDate), 'dd MMM') : `${format(new Date(startDate), 'dd MMM')} - ${format(new Date(endDate), 'dd MMM')}`})
                 </p>
                 <h3 className="text-2xl font-bold mt-1">₹{(dateStats.totalSalesAmount || 0).toLocaleString()}</h3>
               </div>
@@ -303,7 +305,7 @@ export default function Dashboard() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-blue-100 uppercase tracking-wider">Items Sold Today</p>
+                <p className="text-xs font-medium text-blue-100 uppercase tracking-wider">{t('items_sold')}</p>
                 <h3 className="text-2xl font-bold mt-1">{dateStats.itemsSold} Products</h3>
               </div>
               <div className="p-3 bg-white/20 rounded-xl">
@@ -317,7 +319,7 @@ export default function Dashboard() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">Total In Stock</p>
+                <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">{t('total_in_stock')}</p>
                 <div className="flex flex-col">
                   <h3 className="text-2xl font-bold mt-1 text-neutral-900">{stats.totalProductTypes || 0} Types</h3>
                   <p className="text-xs text-neutral-400 font-medium">{(stats.totalUnits || 0).toLocaleString()} total units</p>
@@ -334,7 +336,7 @@ export default function Dashboard() {
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">Low Stock Alerts</p>
+                <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">{t('low_stock_alerts')}</p>
                 <h3 className={`text-2xl font-bold mt-1 ${stats.lowStock > 0 ? 'text-amber-600' : 'text-teal-600'}`}>
                   {stats.lowStock} Items
                 </h3>
@@ -351,7 +353,7 @@ export default function Dashboard() {
         {/* Customer Activity for the day */}
         <Card className="lg:col-span-1 border-none shadow-sm bg-white">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold uppercase tracking-wider text-neutral-500">Customer Activity</CardTitle>
+            <CardTitle className="text-sm font-semibold uppercase tracking-wider text-neutral-500">{t('customer_activity')}</CardTitle>
             <CardDescription>
               {startDate === endDate 
                 ? format(new Date(startDate), 'dd MMM yyyy') 
@@ -407,28 +409,28 @@ export default function Dashboard() {
         {/* Shop Credit Health Summary */}
         <Card className="lg:col-span-2 border-none shadow-sm bg-white border border-neutral-100">
           <CardHeader>
-            <CardTitle className="text-lg">Business Overview</CardTitle>
-            <CardDescription>Performance for {dateFilter === 'today' ? 'Today' : 'selected range'}</CardDescription>
+            <CardTitle className="text-lg">{t('business_overview')}</CardTitle>
+            <CardDescription>Performance for {dateFilter === 'today' ? t('today') : 'selected range'}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-4 rounded-xl bg-blue-50 border border-blue-100">
-                <p className="text-xs font-bold text-blue-600 uppercase mb-1">Total Sales</p>
+                <p className="text-xs font-bold text-blue-600 uppercase mb-1">{t('total_sales')}</p>
                 <p className="text-2xl font-bold text-blue-900">₹{(stats.totalSales || 0).toLocaleString()}</p>
-                <p className="text-[10px] text-blue-400 mt-1">{dateFilter === 'today' ? 'Today\'s' : 'Range'} sales total</p>
+                <p className="text-[10px] text-blue-400 mt-1">{dateFilter === 'today' ? t('today') : 'Range'} sales total</p>
               </div>
               <div className="p-4 rounded-xl bg-teal-50 border border-teal-100">
-                <p className="text-xs font-bold text-teal-600 uppercase mb-1">Total Credit Sales</p>
+                <p className="text-xs font-bold text-teal-600 uppercase mb-1">{t('total_credit_sales')}</p>
                 <p className="text-2xl font-bold text-teal-900">₹{(stats.totalCreditSales || 0).toLocaleString()}</p>
                 <p className="text-[10px] text-teal-400 mt-1">Amount sold on credit</p>
               </div>
               <div className="p-4 rounded-xl bg-amber-50 border border-amber-100">
-                <p className="text-xs font-bold text-amber-600 uppercase mb-1">Dues Paid</p>
+                <p className="text-xs font-bold text-amber-600 uppercase mb-1">{t('dues_paid')}</p>
                 <p className="text-2xl font-bold text-amber-900">₹{(stats.duesPaid || 0).toLocaleString()}</p>
                 <p className="text-[10px] text-amber-400 mt-1">Debt recovered in period</p>
               </div>
               <div className="p-4 rounded-xl bg-rose-50 border border-rose-100 shadow-sm border-2">
-                <p className="text-xs font-bold text-rose-600 uppercase mb-1">Dues Remaining</p>
+                <p className="text-xs font-bold text-rose-600 uppercase mb-1">{t('dues_remaining')}</p>
                 <p className="text-2xl font-bold text-rose-900">₹{(stats.outstandingCredit || 0).toLocaleString()}</p>
                 <p className="text-[10px] text-rose-400 mt-1">Current total outstanding debt</p>
               </div>

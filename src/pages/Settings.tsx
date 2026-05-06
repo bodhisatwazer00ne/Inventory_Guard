@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import { useLanguage } from '../contexts/LanguageContext';
 import { db } from '../firebase/config';
 import { collection, query, where, getDocs, writeBatch, doc, updateDoc } from 'firebase/firestore';
 import { Button } from '../components/ui/button';
@@ -12,6 +13,7 @@ import { auth } from '../firebase/config';
 import { signOut } from 'firebase/auth';
 
 export default function Settings() {
+  const { t } = useLanguage();
   const { user, profile } = useAuth();
   const [shopName, setShopName] = useState(profile?.shopName || '');
   const [loading, setLoading] = useState(false);

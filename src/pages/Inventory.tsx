@@ -3,6 +3,7 @@ import { collection, query, where, onSnapshot, addDoc, updateDoc, deleteDoc, doc
 import { db } from '../firebase/config';
 import { handleFirestoreError, OperationType } from '../firebase/utils';
 import { useAuth } from '../hooks/useAuth';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   Package, 
   Plus, 
@@ -46,6 +47,7 @@ import { Product } from '../types';
 import { toast } from 'sonner';
 
 export default function Inventory() {
+  const { t } = useLanguage();
   const { user, profile } = useAuth();
   const isAdmin = profile?.role === 'ADMIN';
   const shopId = profile?.shopId;
@@ -171,7 +173,7 @@ export default function Inventory() {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
           <Input 
-            placeholder="Search products, SKU, category..." 
+            placeholder={t('search_placeholder')} 
             className="pl-10"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -211,21 +213,21 @@ export default function Inventory() {
                 render={
                   <Button className="bg-teal-600 hover:bg-teal-700">
                     <Plus className="w-4 h-4 mr-2" />
-                    Add Product
+                    {t('add_product')}
                   </Button>
                 }
               />
               <DialogContent className="sm:max-w-[425px]">
                 <form onSubmit={handleCreateOrUpdate}>
                   <DialogHeader>
-                    <DialogTitle>{editingProduct ? 'Edit Product' : 'Add New Product'}</DialogTitle>
+                    <DialogTitle>{editingProduct ? t('edit_product') : t('add_product')}</DialogTitle>
                     <DialogDescription>
                       Fill in the details for your inventory item.
                     </DialogDescription>
                   </DialogHeader>
                   <div className="grid gap-4 py-4">
                     <div className="grid gap-2">
-                      <Label htmlFor="name">Product Name</Label>
+                      <Label htmlFor="name">{t('product_name')}</Label>
                       <Input 
                         id="name" 
                         required 
@@ -235,7 +237,7 @@ export default function Inventory() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="grid gap-2">
-                        <Label htmlFor="sku">SKU</Label>
+                        <Label htmlFor="sku">{t('sku')}</Label>
                         <Input 
                           id="sku" 
                           value={formData.sku}
@@ -243,7 +245,7 @@ export default function Inventory() {
                         />
                       </div>
                       <div className="grid gap-2">
-                        <Label htmlFor="category">Category</Label>
+                        <Label htmlFor="category">{t('category')}</Label>
                         <Input 
                           id="category" 
                           value={formData.category}
@@ -253,7 +255,7 @@ export default function Inventory() {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="grid gap-2">
-                        <Label htmlFor="price">Price (₹)</Label>
+                        <Label htmlFor="price">{t('price')} (₹)</Label>
                         <Input 
                           id="price" 
                           type="number" 
@@ -264,7 +266,7 @@ export default function Inventory() {
                         />
                       </div>
                       <div className="grid gap-2">
-                        <Label htmlFor="quantity">Quantity</Label>
+                        <Label htmlFor="quantity">{t('quantity')}</Label>
                         <Input 
                           id="quantity" 
                           type="number" 
@@ -275,7 +277,7 @@ export default function Inventory() {
                       </div>
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="threshold">Low Stock Alert Threshold</Label>
+                      <Label htmlFor="threshold">{t('threshold')}</Label>
                       <Input 
                         id="threshold" 
                         type="number" 
@@ -286,7 +288,7 @@ export default function Inventory() {
                   </div>
                   <DialogFooter>
                     <Button type="submit" className="w-full bg-teal-600 hover:bg-teal-700 font-semibold">
-                      {editingProduct ? 'Update Product' : 'Add to Inventory'}
+                      {editingProduct ? t('edit_product') : t('add_product')}
                     </Button>
                   </DialogFooter>
                 </form>
@@ -302,11 +304,11 @@ export default function Inventory() {
             <TableHeader>
               <TableRow className="bg-neutral-50/50">
                 <TableHead className="w-[300px]">Product</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Quantity</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>{t('category')}</TableHead>
+                <TableHead>{t('price')}</TableHead>
+                <TableHead>{t('quantity')}</TableHead>
+                <TableHead>{t('status')}</TableHead>
+                <TableHead className="text-right">{t('actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -374,17 +376,17 @@ export default function Inventory() {
                         {isOutOfStock ? (
                           <div className="flex items-center gap-1.5 text-rose-600 whitespace-nowrap">
                             <AlertCircle className="w-4 h-4" />
-                            <span className="text-xs font-medium">Out of Stock</span>
+                            <span className="text-xs font-medium">{t('out_of_stock')}</span>
                           </div>
                         ) : isLowStock ? (
                           <div className="flex items-center gap-1.5 text-amber-600 whitespace-nowrap">
                             <AlertCircle className="w-4 h-4" />
-                            <span className="text-xs font-medium">Low Stock</span>
+                            <span className="text-xs font-medium">{t('low_stock')}</span>
                           </div>
                         ) : (
                           <div className="flex items-center gap-1.5 text-teal-600 whitespace-nowrap">
                             <CheckCircle2 className="w-4 h-4" />
-                            <span className="text-xs font-medium">Healthy</span>
+                            <span className="text-xs font-medium">{t('healthy')}</span>
                           </div>
                         )}
                       </TableCell>

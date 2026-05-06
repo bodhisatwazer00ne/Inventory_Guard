@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import { useLanguage } from '../contexts/LanguageContext';
 import { db } from '../firebase/config';
 import { collection, query, where, onSnapshot, orderBy, getDocs } from 'firebase/firestore';
 import { Order, PaymentRecord, Customer } from '../types';
@@ -17,6 +18,7 @@ import { Search, Receipt, Calendar, CreditCard } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function OrderHistory() {
+  const { t } = useLanguage();
   const { profile } = useAuth();
   const shopId = profile?.shopId;
   const [items, setItems] = useState<any[]>([]); // Merged Orders and Payments

@@ -15,26 +15,29 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../hooks/useAuth';
+import { useLanguage } from '../contexts/LanguageContext';
+import { LanguageSwitcher } from './LanguageSwitcher';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
 import { Separator } from './ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
-const navItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: BarChart3 },
-  { path: '/billing', label: 'Billing', icon: CreditCard },
-  { path: '/inventory', label: 'Inventory', icon: Package },
-  { path: '/customers', label: 'Customers', icon: Users },
-  { path: '/ledger', label: 'Ledger', icon: BookText },
-  { path: '/orders', label: 'Orders', icon: History },
-  { path: '/settings', label: 'Settings', icon: Settings },
-];
-
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { t } = useLanguage();
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const { user, profile, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const navItems = [
+    { path: '/dashboard', label: t('dashboard'), icon: BarChart3 },
+    { path: '/billing', label: t('billing'), icon: CreditCard },
+    { path: '/inventory', label: t('inventory'), icon: Package },
+    { path: '/customers', label: t('customers'), icon: Users },
+    { path: '/ledger', label: t('ledger'), icon: BookText },
+    { path: '/orders', label: t('orders'), icon: History },
+    { path: '/settings', label: t('settings'), icon: Settings },
+  ];
 
   React.useEffect(() => {
     // Open sidebar by default on large screens
@@ -53,6 +56,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const handleLogout = async () => {
     await logout();
     navigate('/login');
+  };
+
+  const getPageTitle = () => {
+    if (location.pathname === '/') return 'Home';
+    const item = navItems.find(i => i.path === location.pathname);
+    return item ? item.label : location.pathname.substring(1).split('/')[0].replace('-', ' ');
   };
 
   return (
@@ -141,7 +150,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             onClick={handleLogout}
           >
             <LogOut className="w-5 h-5 mr-3" />
-            Sign Out
+            {t('logout')}
           </Button>
         </div>
       </motion.aside>
@@ -159,12 +168,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
               {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
             <h1 className="text-lg font-semibold text-neutral-900 truncate capitalize">
-              {location.pathname === '/' ? 'Home' : location.pathname.substring(1).split('/')[0].replace('-', ' ')}
+              {getPageTitle()}
             </h1>
           </div>
           
           <div className="flex items-center gap-3">
-             {/* Profile snippet or shop info for mobile */}
+             <LanguageSwitcher />
+             <div className="hidden sm:block h-6 w-px bg-neutral-200" />
              <div className="lg:hidden text-right">
                 <p className="text-[10px] font-bold text-teal-600 uppercase tracking-wider">Kapase Kirana</p>
              </div>

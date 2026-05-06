@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { collection, query, where, onSnapshot, doc, updateDoc, addDoc, writeBatch, orderBy } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { useAuth } from '../hooks/useAuth';
+import { useLanguage } from '../contexts/LanguageContext';
 import { 
   Search, 
   Send, 
@@ -38,6 +39,7 @@ import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 
 export default function Ledger() {
+  const { t } = useLanguage();
   const { user, profile } = useAuth();
   const shopId = profile?.shopId;
   const [ledgers, setLedgers] = useState<LedgerEntry[]>([]);

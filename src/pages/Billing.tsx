@@ -31,6 +31,7 @@ import {
 } from '../components/ui/select';
 import { Product, Customer, OrderItem } from '../types';
 import { handleFirestoreError, OperationType } from '../firebase/utils';
+import { useLanguage } from '../contexts/LanguageContext';
 import { toast } from 'sonner';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { 
@@ -44,6 +45,7 @@ import {
 import { Label } from '../components/ui/label';
 
 export default function Billing() {
+  const { t } = useLanguage();
   const { user, profile } = useAuth();
   const isAdmin = profile?.role === 'ADMIN';
   const shopId = profile?.shopId;
