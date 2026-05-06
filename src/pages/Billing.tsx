@@ -264,48 +264,48 @@ export default function Billing() {
   );
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
+    <div className="flex flex-col xl:flex-row gap-6 h-full min-h-0">
       {/* Left: Selection Area */}
-      <div className="xl:col-span-7 space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="flex bg-neutral-100 p-1 rounded-xl">
+      <div className="flex-1 min-w-0 space-y-4">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex bg-neutral-100 p-1 rounded-xl w-full sm:w-auto">
             <button 
               onClick={() => setIsManualMode(false)}
-              className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all ${!isManualMode ? 'bg-white shadow-sm text-teal-600' : 'text-neutral-500'}`}
+              className={`flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all ${!isManualMode ? 'bg-white shadow-sm text-teal-600' : 'text-neutral-500'}`}
             >
               Inventory
             </button>
             <button 
               onClick={() => setIsManualMode(true)}
-              className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all ${isManualMode ? 'bg-white shadow-sm text-blue-600' : 'text-neutral-500'}`}
+              className={`flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-semibold transition-all ${isManualMode ? 'bg-white shadow-sm text-blue-600' : 'text-neutral-500'}`}
             >
-              Manual Amount
+              Manual
             </button>
           </div>
         </div>
 
         {!isManualMode ? (
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row items-center gap-4">
-              <div className="relative flex-1">
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <div className="relative w-full">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
                 <Input 
-                  placeholder="Search items by name or SKU..." 
-                  className="pl-10 h-12"
+                  placeholder="Search items..." 
+                  className="pl-10 h-10"
                   value={searchProduct}
                   onChange={e => setSearchProduct(e.target.value)}
                 />
               </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="h-10 px-4 rounded-lg bg-white flex items-center gap-2">
+              <div className="hidden sm:flex items-center gap-2">
+                <Badge variant="outline" className="h-10 px-4 rounded-lg bg-white flex items-center gap-2 whitespace-nowrap">
                   <Package className="w-4 h-4" />
                   {products.length} Products
                 </Badge>
               </div>
             </div>
 
-            <ScrollArea className="h-[calc(100vh-320px)] xl:h-[calc(100vh-260px)] pr-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <ScrollArea className="h-[400px] xl:h-[calc(100vh-220px)] pr-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {filteredProducts.map(product => (
                   <Card 
                     key={product.id} 
@@ -319,20 +319,18 @@ export default function Billing() {
                         </Badge>
                       </div>
                     )}
-                    <CardContent className="p-4 flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-lg bg-neutral-100 flex items-center justify-center flex-shrink-0">
-                        <Package className="w-6 h-6 text-neutral-400" />
+                    <CardContent className="p-3 flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center flex-shrink-0">
+                        <Package className="w-5 h-5 text-neutral-400" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-neutral-900 truncate">{product.name}</h4>
-                        <p className="text-xs text-neutral-500 truncate">{product.category || 'No Category'}</p>
-                        <p className="text-sm font-bold text-teal-600 mt-1">₹{product.price.toFixed(2)}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className={`text-xs font-medium ${getAvailableQuantity(product) <= (product.lowStockThreshold || 5) ? 'text-amber-600' : 'text-neutral-400'}`}>
-                          In: {getAvailableQuantity(product)}
-                        </p>
-                        {getAvailableQuantity(product) <= 0 && <Badge variant="destructive" className="mt-1">Out</Badge>}
+                        <h4 className="font-semibold text-sm text-neutral-900 truncate">{product.name}</h4>
+                        <div className="flex items-center justify-between mt-0.5">
+                          <p className="text-sm font-bold text-teal-600">₹{product.price.toFixed(2)}</p>
+                          <p className={`text-[10px] font-medium ${getAvailableQuantity(product) <= (product.lowStockThreshold || 5) ? 'text-amber-600' : 'text-neutral-400'}`}>
+                            Stk: {getAvailableQuantity(product)}
+                          </p>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -341,77 +339,75 @@ export default function Billing() {
             </ScrollArea>
           </div>
         ) : (
-          <div className="h-[calc(100vh-320px)] flex items-center justify-center">
-            <Card className="w-full max-w-md border-none shadow-sm overflow-hidden bg-neutral-50/50 border border-neutral-100">
-              <CardHeader className="text-center pb-2">
-                <div className="w-16 h-16 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-4">
-                  <IndianRupee className="w-8 h-8" />
+          <div className="h-[400px] xl:h-[calc(100vh-220px)] flex items-center justify-center bg-white rounded-xl border border-neutral-100">
+            <div className="w-full max-w-sm p-6 space-y-6">
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-4">
+                  <IndianRupee className="w-6 h-6" />
                 </div>
-                <CardTitle className="text-2xl font-bold">Quick Billing</CardTitle>
+                <CardTitle className="text-xl font-bold">Quick Billing</CardTitle>
                 <CardDescription>Enter a custom amount to bill directly</CardDescription>
-              </CardHeader>
-              <CardContent className="p-8 space-y-6">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label className="text-sm text-neutral-500">Amount (₹)</Label>
-                    <Input 
-                      type="number" 
-                      placeholder="0.00" 
-                      className="text-4xl font-bold h-20 text-center bg-white border-2 focus-visible:ring-blue-500"
-                      value={manualAmount}
-                      onChange={e => setManualAmount(e.target.value)}
-                      autoFocus
-                    />
-                  </div>
-                  <Button 
-                    className="w-full h-14 text-lg font-bold bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/20 group"
-                    disabled={!manualAmount || parseFloat(manualAmount) <= 0}
-                    onClick={() => {
-                      const amount = parseFloat(manualAmount);
-                      const manualItem: Product = {
-                        id: `manual-${Date.now()}`,
-                        name: `Direct Sale Amount`,
-                        price: amount,
-                        quantity: 1,
-                        shopId: shopId || '',
-                        sku: 'DIRECT',
-                        category: 'Quick Sale',
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString()
-                      };
-                      addToCart(manualItem);
-                      setManualAmount('');
-                      setIsManualMode(false);
-                      toast.success(`₹${amount} added to bill`);
-                    }}
-                  >
-                    Add to Bill
-                    <ChevronRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+              </div>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-sm text-neutral-500">Amount (₹)</Label>
+                  <Input 
+                    type="number" 
+                    placeholder="0.00" 
+                    className="text-3xl font-bold h-16 text-center bg-neutral-50 border-2 focus-visible:ring-blue-500"
+                    value={manualAmount}
+                    onChange={e => setManualAmount(e.target.value)}
+                    autoFocus
+                  />
                 </div>
-              </CardContent>
-            </Card>
+                <Button 
+                  className="w-full h-12 font-bold bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/20 group"
+                  disabled={!manualAmount || parseFloat(manualAmount) <= 0}
+                  onClick={() => {
+                    const amount = parseFloat(manualAmount);
+                    const manualItem: Product = {
+                      id: `manual-${Date.now()}`,
+                      name: `Direct Sale Amount`,
+                      price: amount,
+                      quantity: 1,
+                      shopId: shopId || '',
+                      sku: 'DIRECT',
+                      category: 'Quick Sale',
+                      createdAt: new Date().toISOString(),
+                      updatedAt: new Date().toISOString()
+                    };
+                    addToCart(manualItem);
+                    setManualAmount('');
+                    setIsManualMode(false);
+                    toast.success(`₹${amount} added to bill`);
+                  }}
+                >
+                  Add to Bill
+                </Button>
+              </div>
+            </div>
           </div>
         )}
       </div>
 
       {/* Right: Checkout & Cart */}
-      <div className="xl:col-span-5 space-y-6">
-        <Card className="border-none shadow-lg bg-white flex flex-col h-full sticky top-8">
-          <CardHeader className="pb-4">
+      <div className="w-full xl:w-[400px] flex-shrink-0">
+        <Card className="border-none shadow-lg bg-white flex flex-col h-full xl:sticky xl:top-8 max-h-[calc(100vh-120px)]">
+          <CardHeader className="py-4">
             <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <ShoppingCart className="w-5 h-5" />
                 Current Bill
               </CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => setCart([])} className="text-neutral-500 text-xs">
-                Clear Cart
-              </Button>
+              {cart.length > 0 && (
+                <Button variant="ghost" size="sm" onClick={() => setCart([])} className="text-rose-500 text-xs h-8">
+                  Clear
+                </Button>
+              )}
             </div>
-            <CardDescription>Select customer and complete checkout</CardDescription>
           </CardHeader>
 
-          <CardContent className="flex-1 flex flex-col min-h-0 space-y-6">
+          <CardContent className="flex-1 flex flex-col min-h-0 space-y-4 px-4 pb-4">
             {/* Customer Selection */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">

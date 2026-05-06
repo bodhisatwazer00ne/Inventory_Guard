@@ -206,84 +206,80 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Date-Picker & Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-5 rounded-2xl shadow-sm border border-neutral-100">
-        <div className="flex flex-col gap-1">
-          <h2 className="text-lg font-bold text-neutral-900 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-teal-600" />
-            Performance Insights
-          </h2>
-          <p className="text-sm text-neutral-500">Summary matching your selected time range.</p>
-        </div>
-        
-        <div className="flex flex-wrap items-center gap-4">
-          {/* Quick Filter Toggle */}
-          <div className="flex bg-neutral-100 p-1.5 rounded-xl border border-neutral-200/50">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className={`h-9 px-4 rounded-lg text-sm font-semibold transition-all ${dateFilter === 'today' ? 'bg-white shadow-sm text-teal-600' : 'text-neutral-500'}`}
-              onClick={() => setDateFilter('today')}
-            >
-              Today
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className={`h-9 px-4 rounded-lg text-sm font-semibold transition-all ${dateFilter === 'custom' ? 'bg-white shadow-sm text-teal-600' : 'text-neutral-500'}`}
-              onClick={() => setDateFilter('custom')}
-            >
-              Custom Range
-            </Button>
+        <div className="flex flex-col xl:flex-row items-center justify-between gap-6 bg-white p-5 rounded-2xl shadow-sm border border-neutral-100">
+          <div className="flex flex-col gap-1 text-center xl:text-left">
+            <h2 className="text-lg font-bold text-neutral-900 flex items-center justify-center xl:justify-start gap-2">
+              <TrendingUp className="w-5 h-5 text-teal-600" />
+              Performance Insights
+            </h2>
+            <p className="text-sm text-neutral-500">Summary matching your selected time range.</p>
           </div>
-
-          {/* Date Picker Inputs (Always visible/editable in custom mode) */}
-          <div className={`flex flex-wrap items-center gap-2 transition-opacity ${dateFilter === 'today' ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
-            <div className="flex items-center gap-2 bg-neutral-50 px-3 py-2 rounded-lg border border-neutral-200">
-              <span className="text-[10px] font-bold text-neutral-400 uppercase">From</span>
-              <Input 
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="border-none p-0 h-auto focus-visible:ring-0 bg-transparent text-sm w-[125px] font-medium"
-              />
+          
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full xl:w-auto">
+            {/* Quick Filter Toggle */}
+            <div className="flex bg-neutral-100 p-1.5 rounded-xl border border-neutral-200/50 w-full sm:w-auto">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className={`flex-1 sm:flex-none h-9 px-4 rounded-lg text-sm font-semibold transition-all ${dateFilter === 'today' ? 'bg-white shadow-sm text-teal-600' : 'text-neutral-500'}`}
+                onClick={() => setDateFilter('today')}
+              >
+                Today
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className={`flex-1 sm:flex-none h-9 px-4 rounded-lg text-sm font-semibold transition-all ${dateFilter === 'custom' ? 'bg-white shadow-sm text-teal-600' : 'text-neutral-500'}`}
+                onClick={() => setDateFilter('custom')}
+              >
+                Custom Range
+              </Button>
             </div>
-            <div className="flex items-center gap-2 bg-neutral-50 px-3 py-2 rounded-lg border border-neutral-200">
-              <span className="text-[10px] font-bold text-neutral-400 uppercase">To</span>
-              <Input 
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="border-none p-0 h-auto focus-visible:ring-0 bg-transparent text-sm w-[125px] font-medium"
-              />
+
+            {/* Date Picker Inputs */}
+            <div className={`flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto transition-opacity ${dateFilter === 'today' ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
+              <div className="flex items-center gap-2 bg-neutral-50 px-3 py-2 rounded-lg border border-neutral-200 w-full sm:w-auto">
+                <span className="text-[10px] font-bold text-neutral-400 uppercase">From</span>
+                <Input 
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="border-none p-0 h-auto focus-visible:ring-0 bg-transparent text-sm min-w-[125px] font-medium"
+                />
+              </div>
+              <div className="flex items-center gap-2 bg-neutral-50 px-3 py-2 rounded-lg border border-neutral-200 w-full sm:w-auto">
+                <span className="text-[10px] font-bold text-neutral-400 uppercase">To</span>
+                <Input 
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="border-none p-0 h-auto focus-visible:ring-0 bg-transparent text-sm min-w-[125px] font-medium"
+                />
+              </div>
             </div>
           </div>
-
-          <div className="h-8 w-px bg-neutral-200 hidden lg:block"></div>
-
-          {/* PDF Downloads */}
-          <div className="flex items-center gap-2">
+          
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-center">
             <Button 
               variant="outline" 
               size="sm" 
-              className="h-10 text-teal-600 hover:text-teal-700 hover:bg-teal-50 border-teal-200 gap-2 px-3 lg:px-4"
+              className="flex-1 sm:flex-none h-10 text-teal-600 hover:text-teal-700 hover:bg-teal-50 border-teal-200 gap-2 px-3"
               onClick={downloadSalesDuesReport}
             >
               <FileText className="w-4 h-4" />
-              <span className="hidden sm:inline">Sales & Dues Report</span>
+              <span className="hidden sm:inline">Sales Report</span>
             </Button>
             <Button 
               variant="outline" 
               size="sm" 
-              className="h-10 text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-200 gap-2 px-3 lg:px-4"
+              className="flex-1 sm:flex-none h-10 text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-200 gap-2 px-3"
               onClick={downloadInventoryReport}
             >
               <PackageCheck className="w-4 h-4" />
-              <span className="hidden sm:inline">Stock Status Report</span>
+              <span className="hidden sm:inline">Stock Report</span>
             </Button>
           </div>
         </div>
-      </div>
 
       {/* Date-Specific Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
@@ -415,7 +411,7 @@ export default function Dashboard() {
             <CardDescription>Performance for {dateFilter === 'today' ? 'Today' : 'selected range'}</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-4 rounded-xl bg-blue-50 border border-blue-100">
                 <p className="text-xs font-bold text-blue-600 uppercase mb-1">Total Sales</p>
                 <p className="text-2xl font-bold text-blue-900">₹{(stats.totalSales || 0).toLocaleString()}</p>

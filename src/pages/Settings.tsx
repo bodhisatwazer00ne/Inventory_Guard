@@ -149,8 +149,8 @@ export default function Settings() {
             <CardDescription className="text-teal-700/70">Switch between Admin and Sales roles for testing purposes.</CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between p-4 bg-white border border-neutral-200 rounded-xl">
-              <div className="space-y-1">
+            <div className="flex flex-col sm:flex-row items-center justify-between p-4 bg-white border border-neutral-200 rounded-xl gap-4">
+              <div className="space-y-1 text-center sm:text-left">
                 <p className="font-semibold text-neutral-900">Current Role: {profile?.role}</p>
                 <p className="text-sm text-neutral-500">
                   {profile?.role === 'ADMIN' 
@@ -162,7 +162,7 @@ export default function Settings() {
                 variant="outline" 
                 onClick={toggleRole} 
                 disabled={loading}
-                className="border-teal-200 text-teal-700 hover:bg-teal-50"
+                className="w-full sm:w-auto border-teal-200 text-teal-700 hover:bg-teal-50"
               >
                 Switch to {profile?.role === 'ADMIN' ? 'Sales' : 'Admin'}
               </Button>
@@ -179,8 +179,8 @@ export default function Settings() {
             <CardDescription className="text-rose-600">Permanently delete all business records.</CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between p-4 bg-rose-50/30 border border-rose-100 rounded-xl">
-              <div className="space-y-1">
+            <div className="flex flex-col sm:flex-row items-center justify-between p-4 bg-rose-50/30 border border-rose-100 rounded-xl gap-4">
+              <div className="space-y-1 text-center sm:text-left">
                 <p className="font-semibold text-rose-900">Reset All Shop Data</p>
                 <p className="text-sm text-rose-600/80">
                   Deletes all products, customers, transactions, and ledger entries. 
@@ -191,7 +191,7 @@ export default function Settings() {
                 variant="destructive" 
                 onClick={handleResetData} 
                 disabled={loading}
-                className="bg-rose-600 hover:bg-rose-700"
+                className="w-full sm:w-auto bg-rose-600 hover:bg-rose-700"
               >
                 <Trash2 className="w-4 h-4 mr-2" />
                 Reset Data

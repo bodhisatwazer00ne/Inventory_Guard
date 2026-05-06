@@ -483,49 +483,51 @@ export default function Customers() {
                   <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
                     <Receipt className="w-4 h-4 text-blue-600" /> Recent Orders / Bills
                   </h3>
-                  <div className="border rounded-lg overflow-hidden">
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="bg-neutral-50">
-                          <TableHead>Date</TableHead>
-                          <TableHead>Items</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead className="text-right">Total</TableHead>
-                          <TableHead className="w-[40px]"></TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {customerOrders.length === 0 ? (
-                          <TableRow><TableCell colSpan={5} className="text-center py-4 text-neutral-500">No orders found</TableCell></TableRow>
-                        ) : (
-                          customerOrders.map(order => (
-                            <TableRow key={order.id}>
-                              <TableCell className="text-xs">{format(new Date(order.createdAt), 'dd MMM yy')}</TableCell>
-                              <TableCell className="max-w-[200px] truncate text-xs">
-                                {order.items.map(i => i.name).join(', ')}
-                              </TableCell>
-                              <TableCell>
-                                <Badge variant="outline" className={`text-[10px] ${order.paymentStatus === 'PAID' ? 'bg-teal-50 text-teal-700 border-teal-100' : 'bg-amber-50 text-amber-700 border-amber-100'}`}>
-                                  {order.paymentStatus}
-                                </Badge>
-                              </TableCell>
-                              <TableCell className="text-right font-medium text-xs">₹{(order.totalAmount || 0).toLocaleString()}</TableCell>
-                              <TableCell>
-                                <Button 
-                                  variant="ghost" 
-                                  size="icon" 
-                                  className="h-7 w-7 text-neutral-400 hover:text-teal-600"
-                                  title="Download Receipt"
-                                  onClick={() => generateBillPdf(order, selectedCustomer, profile?.shopName || 'Shop')}
-                                >
-                                  <FileDown className="w-3.5 h-3.5" />
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))
-                        )}
-                      </TableBody>
-                    </Table>
+                  <div className="border rounded-lg overflow-hidden overflow-x-auto">
+                    <div className="min-w-[550px] sm:min-w-0">
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="bg-neutral-50">
+                            <TableHead>Date</TableHead>
+                            <TableHead>Items</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead className="text-right">Total</TableHead>
+                            <TableHead className="w-[40px]"></TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {customerOrders.length === 0 ? (
+                            <TableRow><TableCell colSpan={5} className="text-center py-4 text-neutral-500">No orders found</TableCell></TableRow>
+                          ) : (
+                            customerOrders.map(order => (
+                              <TableRow key={order.id}>
+                                <TableCell className="text-xs whitespace-nowrap">{format(new Date(order.createdAt), 'dd MMM yy')}</TableCell>
+                                <TableCell className="max-w-[150px] sm:max-w-[200px] truncate text-xs">
+                                  {order.items.map(i => i.name).join(', ')}
+                                </TableCell>
+                                <TableCell>
+                                  <Badge variant="outline" className={`text-[10px] ${order.paymentStatus === 'PAID' ? 'bg-teal-50 text-teal-700 border-teal-100' : 'bg-amber-50 text-amber-700 border-amber-100'}`}>
+                                    {order.paymentStatus}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell className="text-right font-medium text-xs whitespace-nowrap">₹{(order.totalAmount || 0).toLocaleString()}</TableCell>
+                                <TableCell>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="icon" 
+                                    className="h-7 w-7 text-neutral-400 hover:text-teal-600"
+                                    title="Download Receipt"
+                                    onClick={() => generateBillPdf(order, selectedCustomer, profile?.shopName || 'Shop')}
+                                  >
+                                    <FileDown className="w-3.5 h-3.5" />
+                                  </Button>
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          )}
+                        </TableBody>
+                      </Table>
+                    </div>
                   </div>
                 </div>
 
@@ -533,29 +535,31 @@ export default function Customers() {
                   <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
                     <CreditCard className="w-4 h-4 text-rose-600" /> Payment History (Dues Paid)
                   </h3>
-                  <div className="border rounded-lg overflow-hidden">
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="bg-neutral-50">
-                          <TableHead>Date</TableHead>
-                          <TableHead>Amount Paid</TableHead>
-                          <TableHead>Type</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {customerPayments.length === 0 ? (
-                          <TableRow><TableCell colSpan={3} className="text-center py-4 text-neutral-500">No payment history</TableCell></TableRow>
-                        ) : (
-                          customerPayments.map(payment => (
-                            <TableRow key={payment.id}>
-                              <TableCell className="text-xs">{payment.timestamp ? format(new Date(payment.timestamp), 'dd MMM yy HH:mm') : 'N/A'}</TableCell>
-                              <TableCell className="text-teal-600 font-bold text-xs">₹{(payment.amount || 0).toLocaleString()}</TableCell>
-                              <TableCell className="text-xs text-neutral-500">{payment.type?.replace('_', ' ') || 'Payment'}</TableCell>
-                            </TableRow>
-                          ))
-                        )}
-                      </TableBody>
-                    </Table>
+                  <div className="border rounded-lg overflow-hidden overflow-x-auto">
+                    <div className="min-w-[450px] sm:min-w-0">
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="bg-neutral-50">
+                            <TableHead>Date</TableHead>
+                            <TableHead>Amount Paid</TableHead>
+                            <TableHead>Type</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {customerPayments.length === 0 ? (
+                            <TableRow><TableCell colSpan={3} className="text-center py-4 text-neutral-500">No payment history</TableCell></TableRow>
+                          ) : (
+                            customerPayments.map(payment => (
+                              <TableRow key={payment.id}>
+                                <TableCell className="text-xs whitespace-nowrap">{payment.timestamp ? format(new Date(payment.timestamp), 'dd MMM yy HH:mm') : 'N/A'}</TableCell>
+                                <TableCell className="text-teal-600 font-bold text-xs whitespace-nowrap">₹{(payment.amount || 0).toLocaleString()}</TableCell>
+                                <TableCell className="text-xs text-neutral-500 whitespace-nowrap">{payment.type?.replace('_', ' ') || 'Payment'}</TableCell>
+                              </TableRow>
+                            ))
+                          )}
+                        </TableBody>
+                      </Table>
+                    </div>
                   </div>
                 </div>
               </>

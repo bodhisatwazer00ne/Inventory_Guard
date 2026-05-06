@@ -296,126 +296,128 @@ export default function Inventory() {
         </div>
       </div>
 
-      <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-neutral-50/50">
-              <TableHead className="w-[300px]">Product</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Quantity</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredProducts.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center py-12 text-neutral-500">
-                  {search ? 'No products match your search' : 'Your inventory is empty'}
-                </TableCell>
+      <div className="bg-white border border-neutral-200 rounded-xl overflow-hidden overflow-x-auto">
+        <div className="min-w-[800px] lg:min-w-0">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-neutral-50/50">
+                <TableHead className="w-[300px]">Product</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
-            ) : (
-              filteredProducts.map((product) => {
-                const isLowStock = product.quantity <= (product.lowStockThreshold || 5);
-                const isOutOfStock = product.quantity <= 0;
-                
-                return (
-                  <TableRow key={product.id}>
-                    <TableCell>
-                      <div className="flex flex-col">
-                        <span className="font-medium text-neutral-900">{product.name}</span>
-                        <span className="text-xs text-neutral-500 font-mono uppercase">{product.sku || 'No SKU'}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className="font-normal">
-                        {product.category || 'Uncategorized'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="font-medium">₹{product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <span className={`font-semibold ${isLowStock ? 'text-amber-600' : 'text-neutral-900'}`}>
-                          {product.quantity}
-                        </span>
-                        {isAdmin && (
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-6 w-6 text-teal-600 hover:bg-teal-50"
-                            onClick={() => {
-                              const amountStr = prompt(`Adjustment for ${product.name} (use negative for deduction):`);
-                              if (amountStr !== null) {
-                                const amount = parseInt(amountStr);
-                                if (isNaN(amount)) {
-                                  toast.error("Invalid number entered");
-                                  return;
+            </TableHeader>
+            <TableBody>
+              {filteredProducts.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-12 text-neutral-500">
+                    {search ? 'No products match your search' : 'Your inventory is empty'}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredProducts.map((product) => {
+                  const isLowStock = product.quantity <= (product.lowStockThreshold || 5);
+                  const isOutOfStock = product.quantity <= 0;
+                  
+                  return (
+                    <TableRow key={product.id}>
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <span className="font-medium text-neutral-900">{product.name}</span>
+                          <span className="text-xs text-neutral-500 font-mono uppercase">{product.sku || 'No SKU'}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="font-normal whitespace-nowrap">
+                          {product.category || 'Uncategorized'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="font-medium">₹{product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <span className={`font-semibold ${isLowStock ? 'text-amber-600' : 'text-neutral-900'}`}>
+                            {product.quantity}
+                          </span>
+                          {isAdmin && (
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-6 w-6 text-teal-600 hover:bg-teal-50"
+                              onClick={() => {
+                                const amountStr = prompt(`Adjustment for ${product.name} (use negative for deduction):`);
+                                if (amountStr !== null) {
+                                  const amount = parseInt(amountStr);
+                                  if (isNaN(amount)) {
+                                    toast.error("Invalid number entered");
+                                    return;
+                                  }
+                                  if (product.quantity + amount < 0) {
+                                    toast.error("Adjusted quantity cannot be negative");
+                                    return;
+                                  }
+                                  updateDoc(doc(db, 'products', product.id), {
+                                    quantity: product.quantity + amount,
+                                    updatedAt: new Date().toISOString()
+                                  });
+                                  toast.success(`${amount >= 0 ? 'Added' : 'Subtracted'} ${Math.abs(amount)} ${amount >= 0 ? 'to' : 'from'} ${product.name}`);
                                 }
-                                if (product.quantity + amount < 0) {
-                                  toast.error("Adjusted quantity cannot be negative");
-                                  return;
-                                }
-                                updateDoc(doc(db, 'products', product.id), {
-                                  quantity: product.quantity + amount,
-                                  updatedAt: new Date().toISOString()
-                                });
-                                toast.success(`${amount >= 0 ? 'Added' : 'Subtracted'} ${Math.abs(amount)} ${amount >= 0 ? 'to' : 'from'} ${product.name}`);
-                              }
-                            }}
-                          >
-                            <Plus className="w-3 h-3" />
-                          </Button>
+                              }}
+                            >
+                              <Plus className="w-3 h-3" />
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {isOutOfStock ? (
+                          <div className="flex items-center gap-1.5 text-rose-600 whitespace-nowrap">
+                            <AlertCircle className="w-4 h-4" />
+                            <span className="text-xs font-medium">Out of Stock</span>
+                          </div>
+                        ) : isLowStock ? (
+                          <div className="flex items-center gap-1.5 text-amber-600 whitespace-nowrap">
+                            <AlertCircle className="w-4 h-4" />
+                            <span className="text-xs font-medium">Low Stock</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-1.5 text-teal-600 whitespace-nowrap">
+                            <CheckCircle2 className="w-4 h-4" />
+                            <span className="text-xs font-medium">Healthy</span>
+                          </div>
                         )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {isOutOfStock ? (
-                        <div className="flex items-center gap-1.5 text-rose-600">
-                          <AlertCircle className="w-4 h-4" />
-                          <span className="text-xs font-medium">Out of Stock</span>
-                        </div>
-                      ) : isLowStock ? (
-                        <div className="flex items-center gap-1.5 text-amber-600">
-                          <AlertCircle className="w-4 h-4" />
-                          <span className="text-xs font-medium">Low Stock</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-1.5 text-teal-600">
-                          <CheckCircle2 className="w-4 h-4" />
-                          <span className="text-xs font-medium">Healthy</span>
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {isAdmin ? (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger 
-                            render={
-                              <Button variant="ghost" size="icon">
-                                <MoreVertical className="w-4 h-4" />
-                              </Button>
-                            }
-                          />
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => openEditDialog(product)}>
-                              <Pencil className="w-4 h-4 mr-2" /> Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="text-rose-600" onClick={() => handleDelete(product.id)}>
-                              <Trash2 className="w-4 h-4 mr-2" /> Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      ) : (
-                        <Badge variant="secondary" className="bg-neutral-100 text-neutral-500 font-normal">View Only</Badge>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
+                      </TableCell>
+                      <TableCell className="text-right whitespace-nowrap">
+                        {isAdmin ? (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger 
+                              render={
+                                <Button variant="ghost" size="icon">
+                                  <MoreVertical className="w-4 h-4" />
+                                </Button>
+                              }
+                            />
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => openEditDialog(product)}>
+                                <Pencil className="w-4 h-4 mr-2" /> Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-rose-600" onClick={() => handleDelete(product.id)}>
+                                <Trash2 className="w-4 h-4 mr-2" /> Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        ) : (
+                          <Badge variant="secondary" className="bg-neutral-100 text-neutral-500 font-normal">View Only</Badge>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );
